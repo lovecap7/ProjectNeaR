@@ -1,7 +1,0 @@
-﻿状態,武器,アニメーション
-Idle,None,Boss|Idle
-Death,None,Boss|Dead
-LeftAttack,None,Boss|LeftAttack
-RightAttack,None,Boss|RightAttack
-BothAttack,None,Boss|BothAttack
-Shot,None,Boss|Shot
