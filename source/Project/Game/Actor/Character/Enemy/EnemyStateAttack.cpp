@@ -24,6 +24,9 @@ namespace
 
 	//警告効果音
 	const std::wstring kWarningSE = L"Warning";
+
+	//グループにいる際のクールタイムを長くする倍率
+	constexpr float kGroupAttackCoolTimeRate = 2.0f;
 }
 
 EnemyStateAttack::EnemyStateAttack(std::weak_ptr<Actor> enemy, bool isWait, std::shared_ptr<AttackData> attackData):
@@ -63,17 +66,24 @@ EnemyStateAttack::~EnemyStateAttack()
 		//攻撃削除
 		DeleteAttack();
 	}
-	//攻撃クールタイム設定
+	
 	if (m_pOwner.expired())return;
 	auto owner = std::dynamic_pointer_cast<EnemyBase>(m_pOwner.lock());
-	owner->SetAttackCoolTime(static_cast<float>(m_attackData->GetCancelFrame()));
+	
+	auto attackCoolTime = static_cast<float>(m_attackData->GetCancelFrame());
 
 	//グループに所属しているなら
 	if (owner->IsInGroup())
 	{
 		//攻撃権を失う
 		owner->SetCanAttack(false);
+
+		//長めのクールタイム
+		attackCoolTime *= kGroupAttackCoolTimeRate;
 	}
+
+	//攻撃クールタイム設定
+	owner->SetAttackCoolTime(attackCoolTime);
 }
 
 void EnemyStateAttack::Init()
